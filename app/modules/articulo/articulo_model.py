@@ -1,6 +1,6 @@
 from app.database.connect_db import ConnectDB
-from app.modules.marca.marca_model import MarcaModel
-from app.modules.proveedor.proveedor_model import ProveedorModel
+from app.modules.marca.marca_model import MarcaModel as Marca
+from app.modules.proveedor.proveedor_model import ProveedorModel as Proveedor
 
 
 class ArticuloModel:
@@ -17,13 +17,13 @@ class ArticuloModel:
     """
     SQL_DELETE = "DELETE FROM ARTICULOS WHERE id = %s"
 
-    def __init__(self, id=0, descripcion="", precio=0.0, stock=0, marca_id=0, proveedor_id=0):
+    def __init__(self, id:int = 0, descripcion="", precio=0.0, stock=0, marca:Marca = None, proveedor:Proveedor = None):
         self.id = id
         self.descripcion = descripcion
         self.precio = precio
         self.stock = stock
-        self.marca_id = marca_id
-        self.proveedor_id = proveedor_id
+        self.marca = marca
+        self.proveedor = proveedor
 
     def serializar(self):
         return {
@@ -31,56 +31,53 @@ class ArticuloModel:
             "descripcion": self.descripcion,
             "precio": self.precio,
             "stock": self.stock,
-            "marca_id": self.marca_id,
-            "proveedor_id": self.proveedor_id
-        }
-
+            "marca": self.marca.serializar(),
+            "proveedor": self.proveedor.serializar()
+    }
     @staticmethod
     def deserializar(data: dict):
         return ArticuloModel(
-            id=data.get("id", 0),
-            descripcion=data.get("descripcion", ""),
-            precio=data.get("precio", 0.0),
-            stock=data.get("stock", 0),
-            marca_id=data.get("marca_id", 0),
-            proveedor_id=data.get("proveedor_id", 0)
+            id=data['id'], 
+            descripcion=data['descripcion'],
+            precio=data['precio'], 
+            stock=data['stock'],
+            marca=data['marca'],
+            proveedor=data['proveedor']            
         )
 
     @staticmethod
-    def get_all():
+    def get_all()->list[dict]:
         rows = ConnectDB.read(ArticuloModel.SQL_SELECT_ALL)
         if not rows:
             return []
 
-
-        marcas = {m["id"]: m for m in MarcaModel.get_all()}
-        proveedores = {p["id"]: p for p in ProveedorModel.get_all()}
-
+        articulos = []
         for row in rows:
-            row["marca"] = marcas.get(row["marca_id"])
-            row["proveedor"] = proveedores.get(row["proveedor_id"])
+            marca = Marca(row["marca_id"]).get_by_id()
+            # proveedor = Proveedor(row["proveedor_id"]).get_by_id()
+            row["marca"] = marca
+            articulos.append(row)
+        return articulos
 
-        return rows
+    # def get_by_id(self):
+    #     result = ConnectDB.read(ArticuloModel.SQL_SELECT_BY_ID, (self.id,))
+    #     return result[0] if result else None
 
-    def get_by_id(self):
-        result = ConnectDB.read(ArticuloModel.SQL_SELECT_BY_ID, (self.id,))
-        return result[0] if result else None
+    # def create(self):
+    #     params = (self.descripcion, self.precio, self.stock, self.marca_id, self.proveedor_id)
+    #     result = ConnectDB.write(ArticuloModel.SQL_INSERT, params)
+    #     return result if result else False
 
-    def create(self):
-        params = (self.descripcion, self.precio, self.stock, self.marca_id, self.proveedor_id)
-        result = ConnectDB.write(ArticuloModel.SQL_INSERT, params)
-        return result if result else False
+    # def update(self):
+    #     params = (
+    #         self.descripcion, self.precio, self.stock,
+    #         self.marca_id, self.proveedor_id, self.id
+    #     )
+    #     result = ConnectDB.write(ArticuloModel.SQL_UPDATE, params)
+    #     return result > 0
 
-    def update(self):
-        params = (
-            self.descripcion, self.precio, self.stock,
-            self.marca_id, self.proveedor_id, self.id
-        )
-        result = ConnectDB.write(ArticuloModel.SQL_UPDATE, params)
-        return result > 0
-
-    @staticmethod
-    def delete(id: int):
-        ConnectDB.write("DELETE FROM ARTICULOS_CATEGORIAS WHERE articulo_id = %s", (id,))
-        result = ConnectDB.write(ArticuloModel.SQL_DELETE, (id,))
-        return result > 0
+    # @staticmethod
+    # def delete(id: int):
+    #     ConnectDB.write("DELETE FROM ARTICULOS_CATEGORIAS WHERE articulo_id = %s", (id,))
+    #     result = ConnectDB.write(ArticuloModel.SQL_DELETE, (id,))
+    #     return result > 0
