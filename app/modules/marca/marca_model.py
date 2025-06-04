@@ -41,7 +41,25 @@ class MarcaModel:
     def update(self):
         result = ConnectDB.write(MarcaModel.SQL_UPDATE, (self.nombre, self.id))
         return result > 0
+    
+    @staticmethod
+    def delete(id: int) -> bool | None:
+        try:
+            getArticulosByMarca = MarcaModel.getArticulosByMarca(id)
+            
+            if len(getArticulosByMarca) > 0:
+                return False            
+            # Si no hay artículos asociados, procede a eliminar la marca
+            result = ConnectDB.write(MarcaModel.SQL_DELETE, (id,))
+            return result > 0 if result is not None else None
 
-    def delete(id: int):
-        result = ConnectDB.write(MarcaModel.SQL_DELETE, (id,))
-        return result > 0 if result else False
+        except Exception as e:
+            return None
+    
+    @staticmethod
+    def getArticulosByMarca(id: int) -> list[dict]:
+        SQL_SELECT_ARTICULOS_BY_MARCA = """
+            SELECT * FROM ARTICULOS WHERE marca_id = %s
+        """
+        rows = ConnectDB.read(SQL_SELECT_ARTICULOS_BY_MARCA, (id,))
+        return rows if rows else []

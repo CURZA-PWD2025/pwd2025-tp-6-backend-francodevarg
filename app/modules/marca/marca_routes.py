@@ -70,6 +70,8 @@ def delete(id):
         
         if result:
             return jsonify({'mensaje': 'Marca eliminada con éxito'}), 200
+        elif result is False:
+            return jsonify({'mensaje': 'No se pudo eliminar la marca, puede que tenga artículos asociados'}), 400
         else:
             return jsonify({'mensaje': 'Error al eliminar la marca'}), 500
     except Exception as exc:
