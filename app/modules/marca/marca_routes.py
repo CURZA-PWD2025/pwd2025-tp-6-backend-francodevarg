@@ -30,12 +30,12 @@ def get_by_id(id):
 def create():
     try:
         data = request.get_json()
-        name = data.get('name')
+        name = data.get('nombre')
 
         if not name:
             return jsonify({'mensaje': 'La descripción es requerida'}), 400
 
-        result = MarcaController.create(name)
+        result = MarcaController.create(nombre=name)
         
         if result:
             return jsonify({'mensaje': 'Marca creada con éxito', 'id': result}), 201
@@ -49,12 +49,12 @@ def update(id):
     try:
         # Obtener los datos del cuerpo de la solicitud
         data = request.get_json()
-        name = data.get('name')
+        name = data.get('nombre')
 
         if not name:
             return jsonify({'mensaje': 'La descripción es requerida'}), 400
 
-        result = MarcaController.update(id, name)
+        result = MarcaController.update(id, nombre=name)
         
         if result:
             return jsonify({'mensaje': 'Marca actualizada con éxito'}), 200

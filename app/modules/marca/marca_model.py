@@ -8,21 +8,21 @@ class MarcaModel:
     SQL_UPDATE = "UPDATE MARCAS SET nombre = %s WHERE id = %s"
     SQL_DELETE = "DELETE FROM MARCAS WHERE id = %s"
     
-    def __init__(self, id: int = 0, name: str = ""):
+    def __init__(self, id: int = 0, nombre: str = ""):
         self.id = id
-        self.name = name
+        self.nombre = nombre
 
     def serializar(self) -> dict:
         return {
             'id': self.id,
-            'name': self.name
+            'nombre': self.nombre
         }
 
     @staticmethod
     def deserializar(data: dict):
         return MarcaModel(
             id=data['id'],
-            name=data['name'],
+            nombre=data['nombre'],
         )
 
     @staticmethod
@@ -35,14 +35,13 @@ class MarcaModel:
         return result[0] if result else None
 
     def create(self):
-        result = ConnectDB.write(MarcaModel.SQL_INSERT, (self.name,))
+        result = ConnectDB.write(MarcaModel.SQL_INSERT, (self.nombre,))
         return result if result else False
 
     def update(self):
-        result = ConnectDB.write(MarcaModel.SQL_UPDATE, (self.name, self.id))
+        result = ConnectDB.write(MarcaModel.SQL_UPDATE, (self.nombre, self.id))
         return result > 0
 
-    @staticmethod
     def delete(id: int):
         result = ConnectDB.write(MarcaModel.SQL_DELETE, (id,))
-        return result > 0
+        return result > 0 if result else False

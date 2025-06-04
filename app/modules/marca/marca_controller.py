@@ -12,14 +12,14 @@ class MarcaController:
          return marca
      
       @staticmethod  
-      def update(id: int, name: str):
-            marca = MarcaModel(id, name)
+      def update(id: int, nombre: str):
+            marca = MarcaModel(id, nombre)
             result = marca.update()
             return result 
          
       @staticmethod
-      def create(name: str):
-            marca = MarcaModel(name=name)
+      def create(nombre: str):
+            marca = MarcaModel(nombre=nombre)
             result = marca.create()
             return result
       
