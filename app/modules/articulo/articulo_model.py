@@ -54,14 +54,17 @@ class ArticuloModel:
         articulos = []
         for row in rows:
             marca = Marca(row["marca_id"]).get_by_id()
-            # proveedor = Proveedor(row["proveedor_id"]).get_by_id()
+            proveedor = Proveedor(row["proveedor_id"]).get_by_id()
             row["marca"] = marca
+            row["proveedor"] = proveedor
+            del row["marca_id"]
+            del row["proveedor_id"]
             articulos.append(row)
         return articulos
 
-    # def get_by_id(self):
-    #     result = ConnectDB.read(ArticuloModel.SQL_SELECT_BY_ID, (self.id,))
-    #     return result[0] if result else None
+    def get_by_id(self):
+        result = ConnectDB.read(ArticuloModel.SQL_SELECT_BY_ID, (self.id,))
+        return result[0] if result else None
 
     # def create(self):
     #     params = (self.descripcion, self.precio, self.stock, self.marca_id, self.proveedor_id)
