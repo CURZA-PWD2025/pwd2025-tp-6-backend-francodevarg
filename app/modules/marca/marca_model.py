@@ -26,23 +26,24 @@ class MarcaModel:
         )
 
     @staticmethod
-    def get_all():
+    def get_all() -> list[dict]:
         rows = ConnectDB.read(MarcaModel.SQL_SELECT_ALL)
         return rows if rows else []
 
-    def get_by_id(self):
-        result = ConnectDB.read(MarcaModel.SQL_SELECT_BY_ID, (self.id,))
+    @staticmethod
+    def get_one(id:int) -> dict:
+        result = ConnectDB.read(MarcaModel.SQL_SELECT_BY_ID, (id,))
         return result[0] if result else None
 
-    def create(self):
+    def create(self) -> bool | None:
         result = ConnectDB.write(MarcaModel.SQL_INSERT, (self.nombre,))
-        return result if result else False
+        return result > 0 or None
 
-    def update(self):
-        result = ConnectDB.write(MarcaModel.SQL_UPDATE, (self.nombre, self.id))
-        return result > 0
+
+    def update(self) -> bool | None:
+        result = ConnectDB.write(MarcaModel.SQL_UPDATE, (self.nombre,self.id))
+        return result > 0 or None
     
-    @staticmethod
     def delete(id: int) -> bool | None:
         try:
             getArticulosByMarca = MarcaModel.getArticulosByMarca(id)

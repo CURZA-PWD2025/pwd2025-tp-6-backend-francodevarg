@@ -7,22 +7,21 @@ marca_bp=Blueprint("marcas", __name__)
 def get_all():
     try:
         marcas = MarcaController.get_all()
-        if marcas:
-            return jsonify(marcas), 200
-        else:
-            return jsonify({'mensaje': 'no se encontraron marcas'}),404
+        if len(marcas) == 0:
+            return jsonify({'mensaje': 'No hay marcas registradas'}), 404
+        return jsonify(marcas), 200
         
     except Exception as exc:
          return jsonify({'mensaje': f" error : {str(exc)}"}), 500
 
 @marca_bp.route("/marcas/<int:id>")
-def get_by_id(id):
+def get_one(id):
     try:
-        marca = MarcaController.get_by_id(id)
+        marca = MarcaController.get_one(id)
         if marca:
             return jsonify(marca), 200
         else:
-            return jsonify({'mensaje': 'no se encontro la marca'}), 404
+            return jsonify(marca), 404
     except Exception as exc:
         return jsonify({'mensaje': f" error : {str(exc)}"}), 500
 
@@ -35,10 +34,10 @@ def create():
         if not name:
             return jsonify({'mensaje': 'La descripción es requerida'}), 400
 
-        result = MarcaController.create(nombre=name)
+        result = MarcaController.create(data)
         
         if result:
-            return jsonify({'mensaje': 'Marca creada con éxito', 'id': result}), 201
+            return jsonify({'mensaje': 'Marca creada con éxito'}), 201
         else:
             return jsonify({'mensaje': 'Error al crear la marca'}), 500
     except Exception as exc:
@@ -51,10 +50,15 @@ def update(id):
         data = request.get_json()
         name = data.get('nombre')
 
+        id = data.get('id')
+
+        if not MarcaController.get_one(id):
+            return {"message": f"La marca con ID {id} que intenta actualizar no existe"}, 404
+
         if not name:
             return jsonify({'mensaje': 'La descripción es requerida'}), 400
 
-        result = MarcaController.update(id, nombre=name)
+        result = MarcaController.update(data)
         
         if result:
             return jsonify({'mensaje': 'Marca actualizada con éxito'}), 200
@@ -67,12 +71,9 @@ def update(id):
 def delete(id):
     try:
         result = MarcaController.delete(id)
-        
         if result:
-            return jsonify({'mensaje': 'Marca eliminada con éxito'}), 200
-        elif result is False:
-            return jsonify({'mensaje': 'No se pudo eliminar la marca, puede que tenga artículos asociados'}), 400
+            return jsonify(result), 200
         else:
-            return jsonify({'mensaje': 'Error al eliminar la marca'}), 500
+            return jsonify(result), 400
     except Exception as exc:
         return jsonify({'mensaje': f"Error: {str(exc)}"}), 500
