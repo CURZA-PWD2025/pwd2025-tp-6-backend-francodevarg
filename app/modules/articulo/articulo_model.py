@@ -77,21 +77,31 @@ class ArticuloModel:
         return result[0] if result else None
     
         
-    # def create(self):
-    #     params = (self.descripcion, self.precio, self.stock, self.marca_id, self.proveedor_id)
-    #     result = ConnectDB.write(ArticuloModel.SQL_INSERT, params)
-    #     return result if result else False
+    def create(self):
+        params = (self.descripcion, self.precio, self.stock, self.marca.id, self.proveedor.id)
+        result = ConnectDB.write(ArticuloModel.SQL_INSERT, params)
+        return result if result else False
 
-    # def update(self):
-    #     params = (
-    #         self.descripcion, self.precio, self.stock,
-    #         self.marca_id, self.proveedor_id, self.id
-    #     )
-    #     result = ConnectDB.write(ArticuloModel.SQL_UPDATE, params)
-    #     return result > 0
 
-    # @staticmethod
-    # def delete(id: int):
-    #     ConnectDB.write("DELETE FROM ARTICULOS_CATEGORIAS WHERE articulo_id = %s", (id,))
-    #     result = ConnectDB.write(ArticuloModel.SQL_DELETE, (id,))
-    #     return result > 0
+    def update(self):
+        params = (
+            self.descripcion, self.precio, self.stock,
+            self.marca.id, self.proveedor.id, self.id
+        )
+        result = ConnectDB.write(ArticuloModel.SQL_UPDATE, params)
+        return result > 0
+
+    @staticmethod
+    def delete(id: int):
+        try:
+            #Eliminar las relacions N a N con categorías
+            ConnectDB.write(
+                "DELETE FROM ARTICULOS_CATEGORIAS WHERE articulo_id = %s", (id,)
+            )
+
+            result = ConnectDB.write(ArticuloModel.SQL_DELETE, (id,))
+            return result > 0 if result is not None else None
+
+        except Exception as e:
+            print(f"Error eliminando artículo {id}: {e}")
+            return None
