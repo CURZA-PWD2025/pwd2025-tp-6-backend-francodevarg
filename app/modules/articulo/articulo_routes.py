@@ -16,17 +16,17 @@ def get_all_articulos():
         return jsonify({'mensaje': f"Error: {str(exc)}"}), 500
 
 
-# # Obtener un artículo por ID
-# @articulo_bp.route("/articulos/<int:id>", methods=["GET"])
-# def get_articulo_by_id(id):
-#     try:
-#         articulo = ArticuloController.get_by_id(id)
-#         if articulo:
-#             return jsonify(articulo), 200
-#         else:
-#             return jsonify({'mensaje': 'No se encontró el artículo'}), 404
-#     except Exception as exc:
-#         return jsonify({'mensaje': f"Error: {str(exc)}"}), 500
+# Obtener un artículo por ID
+@articulo_bp.route("/articulos/<int:id>", methods=["GET"])
+def get_articulo_by_id(id):
+    try:
+        articulo = ArticuloController.get_one(id)
+        if articulo:
+            return jsonify(articulo), 200
+        else:
+            return jsonify({'mensaje': 'No se encontró el artículo'}), 404
+    except Exception as exc:
+        return jsonify({'mensaje': f"Error: {str(exc)}"}), 500
 
 
 # # Crear un nuevo artículo

@@ -6,10 +6,10 @@ class ArticuloController:
         articulos = ArticuloModel.get_all()
         return articulos
 
-    # @staticmethod
-    # def get_by_id(id: int):
-    #     articulo = ArticuloModel(id=id).get_by_id()
-    #     return articulo
+    @staticmethod
+    def get_one(id: int):
+        articulo = ArticuloModel().get_one(id=id)
+        return articulo
 
     # @staticmethod
     # def create(descripcion: str, precio: float, stock: int, marca_id: int, proveedor_id: int):
