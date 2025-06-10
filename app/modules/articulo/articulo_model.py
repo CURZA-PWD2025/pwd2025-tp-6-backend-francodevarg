@@ -65,8 +65,18 @@ class ArticuloModel:
     @staticmethod
     def get_one(id: int) -> dict | None:
         result = ConnectDB.read(ArticuloModel.SQL_SELECT_BY_ID, (id,))
+        if result:
+            marca = Marca().get_one((result[0]["marca_id"]))
+            proveedor = Proveedor().get_one((result[0]["proveedor_id"]))
+            result[0]["marca"] = marca
+            result[0]["proveedor"] = proveedor
+            del result[0]["marca_id"]
+            del result[0]["proveedor_id"]
+        else:
+            result = []
         return result[0] if result else None
-
+    
+        
     # def create(self):
     #     params = (self.descripcion, self.precio, self.stock, self.marca_id, self.proveedor_id)
     #     result = ConnectDB.write(ArticuloModel.SQL_INSERT, params)
