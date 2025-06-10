@@ -15,13 +15,31 @@ Este proyecto utiliza **Flask** como framework web y una capa personalizada de a
 
 ## :wrench: Instalación
 
-```bash
-# 1. Crear entorno virtual
-python -m venv .venv
-source .venv/bin/activate   
-```
+1. **Crear Entorno Virtual**
 
-```bash
-# 2. Instalar dependencias
-pip install -r requirements.txt
-```
+    ```bash
+    python -m venv venv
+    source venv/bin/activate   
+    ```
+
+2. **Instalar Dependencias**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+3. **Crear Archivo de Variables de Entorno**
+    ```bash
+    cp .env-dev .env
+    ```
+
+    Ejemplo:
+
+    ```bash
+    DB_NAME=tp_6_db
+    DB_USER=root
+    DB_PASSWORD=password 
+    DB_HOST=localhost
+    DB_PORT=3306
+    FLASK_APP=app.py
+    FLASK_ENV=development
+    ```
