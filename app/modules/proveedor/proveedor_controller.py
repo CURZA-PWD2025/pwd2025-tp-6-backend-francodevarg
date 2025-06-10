@@ -7,20 +7,23 @@ class ProveedorController:
         return ProveedorModel.get_all()
     
     @staticmethod
-    def get_by_id(id: int):
-        return ProveedorModel(id=id).get_by_id()
-    
-    @staticmethod  
-    def update(id: int, nombre: str, telefono: str, direccion: str, email: str):
-        proveedor = ProveedorModel(id, nombre, telefono, direccion, email)
-        result = proveedor.update()
-        return result
+    def get_by_id(id: int)-> dict:
+        proveedor = ProveedorModel().get_by_id(id)
+        return proveedor
     
     @staticmethod
-    def create(nombre: str, telefono: str, direccion: str, email: str):
-        proveedor = ProveedorModel(nombre=nombre, telefono=telefono, direccion=direccion, email=email)
+    def create(data: dict) -> dict:
+        proveedor = ProveedorModel(nombre=data['nombre'], telefono=data['telefono'], 
+                                   direccion=data['direccion'], email=data['email'])
         result = proveedor.create()
-        return proveedor if result else None
+        return result
+    
+    @staticmethod  
+    def update(data: dict) -> dict:
+        proveedor = ProveedorModel(id=data["id"],nombre=data['nombre'], telefono=data['telefono'], 
+                                   direccion=data['direccion'], email=data['email'])        
+        result = proveedor.update()
+        return result
     
     @staticmethod
     def delete(id: int):

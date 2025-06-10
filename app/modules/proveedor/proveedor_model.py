@@ -34,23 +34,41 @@ class ProveedorModel:
         )
 
     @staticmethod
-    def get_all():
+    def get_all() -> list[dict]:
         rows = ConnectDB.read(ProveedorModel.SQL_SELECT_ALL)
         return rows if rows else []
 
-    def get_by_id(self):
-        result = ConnectDB.read(ProveedorModel.SQL_SELECT_BY_ID, (self.id,))
+    @staticmethod
+    def get_by_id(id:int) -> dict:
+        result = ConnectDB.read(ProveedorModel.SQL_SELECT_BY_ID, (id,))
         return result[0] if result else None
 
-    def create(self):
+    def create(self) -> bool | None:
         result = ConnectDB.write(ProveedorModel.SQL_INSERT, (self.nombre, self.telefono, self.direccion, self.email))
-        return result if result else False
-
-    def update(self):
+        return result > 0 or None
+    
+    def update(self) -> bool | None:
         result = ConnectDB.write(ProveedorModel.SQL_UPDATE, (self.nombre, self.telefono, self.direccion, self.email, self.id))
         return result > 0
 
     @staticmethod
-    def delete(id: int):
-        result = ConnectDB.write(ProveedorModel.SQL_DELETE, (id,))
-        return result > 0
+    def delete(id: int) -> bool | None:
+        try:
+            getArticulosByProveedor = ProveedorModel.getArticulosByProveedor(id)
+            
+            if len(getArticulosByProveedor) > 0:
+                return False            
+            # Si no hay artículos asociados, procede a eliminar el proveedor
+            result = ConnectDB.write(ProveedorModel.SQL_DELETE, (id,))
+            return result > 0 if result is not None else None
+
+        except Exception as e:
+            return None
+    
+    @staticmethod
+    def getArticulosByProveedor(id: int) -> list[dict]:
+        SQL_SELECT_ARTICULOS_BY_PROVEEDOR = """
+            SELECT * FROM ARTICULOS WHERE proveedor_id = %s
+        """
+        rows = ConnectDB.read(SQL_SELECT_ARTICULOS_BY_PROVEEDOR, (id,))
+        return rows if rows else []

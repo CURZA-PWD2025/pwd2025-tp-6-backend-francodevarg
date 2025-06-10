@@ -15,7 +15,7 @@ def get_all():
         return jsonify({'mensaje': f"Error: {str(exc)}"}), 500
 
 @proveedor_bp.route("/proveedores/<int:id>", methods=["GET"])
-def get_by_id(id):
+def get_one(id):
     try:
         proveedor = ProveedorController.get_by_id(id)
         if proveedor:
@@ -39,7 +39,7 @@ def create():
         if not nombre or not telefono or not direccion or not email:
             return jsonify({'mensaje': 'Todos los campos son requeridos (nombre,direccion,telefono,email)'}), 400
 
-        proveedor = ProveedorController.create(nombre, telefono, direccion, email)
+        proveedor = ProveedorController.create(data)
         if proveedor:
             return jsonify({'mensaje': 'Proveedor creado con éxito'}), 201
         else:
@@ -56,11 +56,15 @@ def update(id):
         direccion = data.get('direccion')
         email = data.get('email')
 
+        id = data.get('id')
+        if not ProveedorController.get_by_id(id):
+            return jsonify({'mensaje': f'Proveedor con ID {id} no encontrado'}), 404
+
         # Validación de campos requeridos
         if not nombre or not telefono or not direccion or not email:
             return jsonify({'mensaje': 'Todos los campos son requeridos'}), 400
 
-        result = ProveedorController.update(id, nombre, telefono, direccion, email)
+        result = ProveedorController.update(data)
         if result:
             return jsonify({'mensaje': 'Proveedor actualizado con éxito'}), 200
         else:
