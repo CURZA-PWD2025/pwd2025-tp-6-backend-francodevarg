@@ -6,6 +6,8 @@ class CategoriaModel:
     SQL_INSERT = "INSERT INTO CATEGORIAS (nombre) VALUES (%s)"
     SQL_UPDATE = "UPDATE CATEGORIAS SET nombre = %s WHERE id = %s"
     SQL_DELETE = "DELETE FROM CATEGORIAS WHERE id = %s"
+    SQL_HAS_ARTICULOS = "SELECT COUNT(*) as total FROM ARTICULOS_CATEGORIAS WHERE categoria_id = %s"
+
 
     def __init__(self, id: int = 0, nombre: str = ""):
         self.id = id
@@ -43,5 +45,13 @@ class CategoriaModel:
 
     @staticmethod
     def delete(id: int):
+        if CategoriaModel.has_articulos(id):
+            # No permitir borrar si tiene artículos asociados
+            return False
         result = ConnectDB.write(CategoriaModel.SQL_DELETE, (id,))
         return result > 0
+    
+    @staticmethod
+    def has_articulos(id: int) -> bool:
+        result = ConnectDB.read(CategoriaModel.SQL_HAS_ARTICULOS, (id,))
+        return result[0]['total'] > 0 if result else False
