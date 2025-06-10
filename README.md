@@ -43,3 +43,8 @@ Este proyecto utiliza **Flask** como framework web y una capa personalizada de a
     FLASK_APP=app.py
     FLASK_ENV=development
     ```
+
+4. **Correr la migracion de la DB**
+    ```bash
+    python db_init.py
+    ```
