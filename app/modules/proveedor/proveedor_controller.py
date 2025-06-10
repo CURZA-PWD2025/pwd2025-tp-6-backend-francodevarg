@@ -7,8 +7,8 @@ class ProveedorController:
         return ProveedorModel.get_all()
     
     @staticmethod
-    def get_by_id(id: int)-> dict:
-        proveedor = ProveedorModel().get_by_id(id)
+    def get_one(id: int)-> dict:
+        proveedor = ProveedorModel().get_one(id)
         return proveedor
     
     @staticmethod

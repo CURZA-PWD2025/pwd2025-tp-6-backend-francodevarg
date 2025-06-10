@@ -39,7 +39,7 @@ class ProveedorModel:
         return rows if rows else []
 
     @staticmethod
-    def get_by_id(id:int) -> dict:
+    def get_one(id:int) -> dict:
         result = ConnectDB.read(ProveedorModel.SQL_SELECT_BY_ID, (id,))
         return result[0] if result else None
 

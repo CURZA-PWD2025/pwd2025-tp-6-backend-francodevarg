@@ -17,7 +17,7 @@ def get_all():
 @proveedor_bp.route("/proveedores/<int:id>", methods=["GET"])
 def get_one(id):
     try:
-        proveedor = ProveedorController.get_by_id(id)
+        proveedor = ProveedorController.get_one(id)
         if proveedor:
             return jsonify(proveedor), 200
         else:
