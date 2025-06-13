@@ -1,5 +1,19 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
+
+import ApiService from './services/ApiService';
+
+async function fetchMarcas() {
+  try {
+    const response = await ApiService.getAll('marcas/');
+    console.log(response.data);
+  } catch (error) {
+    console.error('Error fetching marcas:', error);
+  }
+}
+
+fetchMarcas();
+
 </script>
 
 <template>
