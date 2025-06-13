@@ -1,21 +1,27 @@
+// services/ApiService.ts
 import {instance as axios} from '../plugins/axios';
+import type { AxiosResponse } from 'axios';
 
-class ApiService{
-    static async getAll(url: string): Promise<any> {
-        try {
-            const response = await axios.get(url);
-            if (response.status === 200) {
-                return response.data;
-            } else {
-                console.warn(`Unexpected response status: ${response.status}`);
-                return null;
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            throw error; // Ensure the error is properly propagated
-        }
+class ApiService {
+  async getAll<T>(url: string): Promise<AxiosResponse<T[]>> {
+    return await axios.get<T[]>(url);
+  }
 
-    }
+  async getOne<T>(url: string, id: number): Promise<AxiosResponse<T>> {
+    return await axios.get<T>(`${url}${id}`);
+  }
+
+  async create<T>(url: string, data: Partial<T>): Promise<AxiosResponse<T>> {
+    return await axios.post<T>(url, data);
+  }
+
+  async update<T>(url: string, id: number, data: Partial<T>): Promise<AxiosResponse<T>> {
+    return await axios.put<T>(`${url}${id}`, data);
+  }
+
+  async destroy(url: string, id: number): Promise<AxiosResponse<{ message: string }>> {
+    return await axios.delete(`${url}${id}`);
+  }
 }
 
-export default ApiService;
+export default new ApiService();
