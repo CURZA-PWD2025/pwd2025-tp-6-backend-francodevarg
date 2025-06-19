@@ -11,13 +11,16 @@
   "dependencies": {
     "axios": "^1.9.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "vuetify": "^3.8.10"
   },
   "devDependencies": {
+    "@mdi/font": "^7.4.47",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/tsconfig": "^0.7.0",
     "typescript": "~5.7.2",
     "vite": "^6.2.0",
+    "vite-plugin-vuetify": "^2.1.1",
     "vue-tsc": "^2.2.4"
   }
 }
