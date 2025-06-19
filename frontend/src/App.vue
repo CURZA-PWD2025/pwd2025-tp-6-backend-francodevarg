@@ -1,44 +1,52 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-
-import ApiService from './services/ApiService';
-
-async function fetchMarcas() {
-  try {
-    const response = await ApiService.getAll('marcas/');
-    console.log(response.data);
-  } catch (error) {
-    console.error('Error fetching marcas:', error);
-  }
-}
-
-fetchMarcas();
-
-</script>
-
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <header class="navbar">
+    <div class="container">
+      <div class="logo">Dolce Passo</div>
+      <nav class="nav">
+        <RouterLink to="/">Inicio</RouterLink>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    <router-view />
+  </main>
 </template>
 
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+</script>
+
 <style scoped>
+.navbar {
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 1.5rem 0;
+}
+
+.container {
+  width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #111;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+.nav a {
+  margin-left: 2rem;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #333;
+  transition: color 0.3s ease;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+.nav a:hover {
+  color: #f39c12;
 }
 </style>
