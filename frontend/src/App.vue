@@ -1,16 +1,19 @@
 <template>
   <v-app>
-    <Sidebar />
+    <v-layout>
 
-    <v-app-bar app color="primary" dark>
-      <v-toolbar-title>Administracion de Tienda</v-toolbar-title>
-    </v-app-bar>
-
-    <v-main>
-      <v-container>
-        <router-view />
-      </v-container>
-    </v-main>
+      <Sidebar />
+      
+      <v-app-bar app color="primary" dark>
+        <v-toolbar-title>Administracion de Tienda</v-toolbar-title>
+      </v-app-bar>
+      
+      <v-main>
+        <div class="mx-4 my-4">
+          <router-view />
+        </div>
+      </v-main>
+    </v-layout>
   </v-app>
 </template>
 
