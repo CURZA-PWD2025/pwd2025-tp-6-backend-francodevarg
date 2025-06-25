@@ -71,9 +71,9 @@ def update(id):
 def delete(id):
     try:
         result = MarcaController.delete(id)
-        if result:
-            return jsonify(result), 200
-        else:
+        if 'error' in result:
             return jsonify(result), 400
+        else:
+            return jsonify(result), 200
     except Exception as exc:
         return jsonify({'mensaje': f"Error: {str(exc)}"}), 500

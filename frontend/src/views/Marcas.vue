@@ -33,9 +33,12 @@
     <!-- Modal de confirmación -->
     <v-dialog v-model="deleteDialog" max-width="400">
       <v-card>
-        <v-card-title class="text-h6">¿Eliminar marca?</v-card-title>
+        <v-card-title class="text-h6">¿Eliminar marca {{ marcaSeleccionada?.nombre }} ?</v-card-title>
         <v-card-text>
           ¿Estás seguro de que querés eliminar <strong>{{ marcaSeleccionada?.nombre }}</strong>?
+        </v-card-text>
+        <v-card-text class="text-caption text-error" v-if="errorDelete">
+          {{ errorDeleteMessage }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -48,9 +51,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted,watch } from 'vue'
 import MarcaService from '../services/MarcaService'
 import type { Marca } from '../types/Marca'
+import { AxiosError } from 'axios'
 
 //ReadOnly
 const headers = [
@@ -61,6 +65,8 @@ const headers = [
 
 const marcas = ref<Marca[]>([])
 const deleteDialog = ref(false)
+const errorDelete = ref(false)
+const errorDeleteMessage = ref("")
 const marcaSeleccionada = ref<Marca | null>(null)
 
 onMounted(async () => {
@@ -91,11 +97,30 @@ async function confirmarEliminacion() {
   try {
     await MarcaService.destroy(marcaSeleccionada.value.id)
     marcas.value = marcas.value.filter(m => m.id !== marcaSeleccionada.value?.id)
-  } catch (error) {
-    console.error('Error al eliminar la marca:', error)
-  } finally {
     deleteDialog.value = false
     marcaSeleccionada.value = null
+    errorDelete.value = false
+    errorDeleteMessage.value = ""
+  } catch (error) {
+    errorDelete.value = true
+    console.error('Error al eliminar la marca:', error)
+
+    if (error instanceof AxiosError && error.response) {
+      const data = error.response.data
+      errorDeleteMessage.value = data?.message || "Ocurrió un error inesperado al eliminar la marca."
+    } else {
+      errorDeleteMessage.value = "Ocurrió un error inesperado. Por favor, intenta nuevamente."
+    }
   }
 }
+
+watch(deleteDialog, (newValue) => {
+  if (!newValue) {
+    setTimeout(() => {
+      marcaSeleccionada.value = null
+      errorDelete.value = false
+      errorDeleteMessage.value = ""
+    }, 300)
+  }
+})
 </script>

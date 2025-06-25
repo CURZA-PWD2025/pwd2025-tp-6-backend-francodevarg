@@ -5,7 +5,7 @@
       <Sidebar />
       
       <v-app-bar app color="primary" dark>
-        <v-toolbar-title>Administracion de Tienda</v-toolbar-title>
+        <v-toolbar-title>Inventario de Tienda</v-toolbar-title>
       </v-app-bar>
       
       <v-main>

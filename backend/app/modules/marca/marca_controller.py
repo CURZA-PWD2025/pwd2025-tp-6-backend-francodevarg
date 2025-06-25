@@ -33,4 +33,4 @@ class MarcaController:
             if result:
                 return {"message": "Marca eliminada correctamente"}
             else:
-                return {"message": "Error al eliminar la marca o la marca tiene artículos asociados"}, 400
+                return {"message": "Error al eliminar la marca o la marca tiene artículos asociados","error":True}
