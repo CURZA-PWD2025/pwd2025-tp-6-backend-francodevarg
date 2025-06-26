@@ -27,7 +27,6 @@ export const useMarcaStore = defineStore('marca', () => {
   async function createMarca(marca: Marca): Promise<boolean> {
     try {
       await MarcaService.create(marca)
-      await fetchMarcas() // Refrescar la lista después de crear
       return true
     } catch (err) {
       console.error('Error al crear la marca:', err)

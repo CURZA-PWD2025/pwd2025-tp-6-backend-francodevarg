@@ -92,6 +92,8 @@ async function confirmarEdicion(marca: Marca) {
       ? await store.createMarca(marca)
       : await store.updateMarca(marca)
 
+  await store.fetchMarcas()
+
   if (ok) cerrarEditDialog()
 }
 
