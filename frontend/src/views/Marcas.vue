@@ -2,100 +2,97 @@
   <v-card class="rounded-lg elevation-1">
     <v-toolbar color="primary" dark flat>
       <v-toolbar-title>Listado de Marcas</v-toolbar-title>
-      <v-spacer></v-spacer>
+      <v-spacer />
+      <v-btn icon @click="nuevaMarca">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
     </v-toolbar>
 
-    <v-data-table-virtual
-      class="pa-2"
-      :headers="headers"
-      :items="store.marcas"
-      item-value="nombre"
-      fixed-header
-      fixed-footer
-      height="400"
-      width="100%"
-      density="comfortable"
-    >
-      <template #item.acciones="{ item }">
-        <div class="d-flex align-center justify-center">
-          <v-icon size="20" class="me-2" color="primary" @click="editarMarca(item)">mdi-pencil</v-icon>
-          <v-icon size="20" color="error" @click="openDeleteDialog(item)">mdi-delete</v-icon>
-        </div>
-      </template>
+    <MarcaTable
+      :marcas="store.marcas"
+      @edit="editarMarca"
+      @delete="openDeleteDialog"
+    />
 
-      <template #bottom>
-        <div class="d-flex justify-end align-center px-4 py-2 text-medium-emphasis text-caption">
-          Total de marcas: <strong class="ml-1">{{ store.marcas.length }}</strong>
-        </div>
-      </template>
-    </v-data-table-virtual>
+    <MarcaDeleteDialog
+      :model-value="deleteDialog"
+      :marca="marcaSeleccionada"
+      :error="store.deleteError"
+      @cancel="cerrarDeleteDialog"
+      @confirm="confirmarEliminacion"
+    />
 
-    <!-- Modal de confirmación -->
-    <v-dialog v-model="deleteDialog" max-width="400">
-      <v-card>
-        <v-card-title class="text-h6">¿Eliminar marca {{ marcaSeleccionada?.nombre }} ?</v-card-title>
-        <v-card-text>
-          ¿Estás seguro de que querés eliminar <strong>{{ marcaSeleccionada?.nombre }}</strong>?
-        </v-card-text>
-        <v-card-text class="text-caption text-error" v-if="store.deleteError">
-          {{ store.deleteError }}
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="deleteDialog = false">Cancelar</v-btn>
-          <v-btn color="error" @click="confirmarEliminacion">Eliminar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <MarcaEditDialog
+      v-model="editDialog"
+      :marca="marcaSeleccionada"
+      @cancel="cerrarEditDialog"
+      @confirm="confirmarEdicion"
+    />
   </v-card>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted,watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useMarcaStore } from '../stores/marcaStore'
 import type { Marca } from '../types/Marca'
-
-
-//ReadOnly
-const headers = [
-  { title: 'ID', key: 'id', align: 'start', sortable: true },
-  { title: 'Nombre', key: 'nombre', align: 'start', sortable: true },
-  { title: 'Acciones', key: 'acciones', align: 'center', sortable: false },
-] as const
+import MarcaTable from '../components/MarcaTable.vue'
+import MarcaDeleteDialog from '../components/MarcaDeleteDialog.vue'
+import MarcaEditDialog from '../components/MarcaEditDialog.vue'
 
 const store = useMarcaStore()
+
 const deleteDialog = ref(false)
+const editDialog = ref(false)
 const marcaSeleccionada = ref<Marca | null>(null)
+const modoEdicion = ref<'create' | 'edit'>('create')
 
 onMounted(() => {
   store.fetchMarcas()
 })
 
-function editarMarca(item: Marca) {
-  console.log('Editar:', item)
+function nuevaMarca() {
+  marcaSeleccionada.value = null
+  modoEdicion.value = 'create'
+  editDialog.value = true
 }
 
 
-function openDeleteDialog(item: Marca) {
-  marcaSeleccionada.value = item
+function editarMarca(marca: Marca) {
+  marcaSeleccionada.value = marca
+  modoEdicion.value = 'edit'
+  editDialog.value = true
+}
+
+
+function cerrarDeleteDialog() {
+  deleteDialog.value = false
+  marcaSeleccionada.value = null
+}
+
+function cerrarEditDialog() {
+  editDialog.value = false
+  marcaSeleccionada.value = null
+}
+
+function openDeleteDialog(marca: Marca) {
+  marcaSeleccionada.value = marca
   deleteDialog.value = true
 }
 
 async function confirmarEliminacion() {
-  if (!marcaSeleccionada.value) return
-
-  const success = await store.deleteMarca(marcaSeleccionada.value.id)
-  if (success) {
-    deleteDialog.value = false
-    marcaSeleccionada.value = null
+  if (marcaSeleccionada.value) {
+    const ok = await store.deleteMarca(marcaSeleccionada.value.id)
+    if (ok) cerrarDeleteDialog()
   }
 }
 
-watch(deleteDialog, (newValue) => {
-  if (!newValue) {
-    setTimeout(() => {
-      marcaSeleccionada.value = null
-    }, 300)
-  }
-})
+async function confirmarEdicion(marca: Marca) {
+  const ok =
+    modoEdicion.value === 'create'
+      ? await store.createMarca(marca)
+      : await store.updateMarca(marca)
+
+  if (ok) cerrarEditDialog()
+}
+
 </script>

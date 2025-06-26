@@ -24,6 +24,29 @@ export const useMarcaStore = defineStore('marca', () => {
     }
   }
 
+  async function createMarca(marca: Marca): Promise<boolean> {
+    try {
+      await MarcaService.create(marca)
+      await fetchMarcas() // Refrescar la lista después de crear
+      return true
+    } catch (err) {
+      console.error('Error al crear la marca:', err)
+      return false
+    }
+  }
+  
+  async function updateMarca(marca: Marca): Promise<boolean> {
+    try {
+      await MarcaService.update(marca.id, marca)
+      const index = marcas.value.findIndex(m => m.id === marca.id)
+      if (index !== -1) marcas.value[index] = { ...marca }
+      return true
+    } catch (err) {
+      console.error('Error al actualizar la marca:', err)
+      return false
+    }
+  }
+  
   async function deleteMarca(id: number): Promise<boolean> {
     deleteError.value = null
     try {
@@ -47,6 +70,8 @@ export const useMarcaStore = defineStore('marca', () => {
     error,
     deleteError,
     fetchMarcas,
+    createMarca,
+    updateMarca,
     deleteMarca,
   }
 })
