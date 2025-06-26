@@ -15,36 +15,44 @@ Este proyecto utiliza **Flask** como framework web y una capa personalizada de a
 
 ## :wrench: Instalación
 
-1. **Crear Entorno Virtual**
+### BACKEND
 
+1. Cambia de directorio 
     ```bash
-    python -m venv venv
-    source venv/bin/activate   
+        cd backend 
     ```
 
-2. **Instalar Dependencias**
+2. **Crear Entorno Virtual**
 
     ```bash
-    pip install -r requirements.txt
+        # Considerar la version: python3.10 -m venv venv
+        python -m venv venv
+        source venv/bin/activate   
     ```
-3. **Crear Archivo de Variables de Entorno**
+
+3. **Instalar Dependencias**
+
     ```bash
-    cp .env-dev .env
+        pip install -r requirements.txt
+    ```
+4. **Crear Archivo de Variables de Entorno**
+    ```bash
+        cp .env-dev .env
     ```
 
     Ejemplo:
 
     ```bash
-    DB_NAME=tp_6_db
-    DB_USER=root
-    DB_PASSWORD=password 
-    DB_HOST=localhost
-    DB_PORT=3306
-    FLASK_APP=app.py
-    FLASK_ENV=development
+        DB_NAME=tp_6_db
+        DB_USER=root
+        DB_PASSWORD=password 
+        DB_HOST=localhost
+        DB_PORT=3306
+        FLASK_APP=app.py
+        FLASK_ENV=development
     ```
 
-4. **Correr la migracion de la DB**
+5. **Correr la migracion de la DB**
     ```bash
-    python db_init.py
+        python db_init.py
     ```
