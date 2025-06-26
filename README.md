@@ -22,7 +22,7 @@ Este proyecto utiliza **Flask** como framework web y una capa personalizada de a
         cd backend 
     ```
 
-2. **Crear Entorno Virtual**
+2. **Crear Entorno Virtual E Ingresar Dentro**
 
     ```bash
         # Considerar la version: python3.10 -m venv venv
@@ -55,4 +55,34 @@ Este proyecto utiliza **Flask** como framework web y una capa personalizada de a
 5. **Correr la migracion de la DB**
     ```bash
         python db_init.py
+    ```
+
+6. **Correr flask**
+    ```bash
+        flask run
+    ```
+
+### FRONTEND
+
+Requisitos
+---
+### :memo: Requisitos Previos
+
+- NodeJS >= v18
+---
+
+
+1. Cambia de directorio 
+    ```bash
+        cd frontend 
+    ```
+
+2. Instalar dependencias
+    ```bash
+        npm install 
+    ```
+
+3. Despliegue en local 
+    ```bash
+        npm run dev 
     ```
