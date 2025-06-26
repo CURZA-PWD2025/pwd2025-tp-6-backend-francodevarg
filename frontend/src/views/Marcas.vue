@@ -8,7 +8,7 @@
     <v-data-table-virtual
       class="pa-2"
       :headers="headers"
-      :items="marcas"
+      :items="store.marcas"
       item-value="nombre"
       fixed-header
       fixed-footer
@@ -25,7 +25,7 @@
 
       <template #bottom>
         <div class="d-flex justify-end align-center px-4 py-2 text-medium-emphasis text-caption">
-          Total de marcas: <strong class="ml-1">{{ marcas.length }}</strong>
+          Total de marcas: <strong class="ml-1">{{ store.marcas.length }}</strong>
         </div>
       </template>
     </v-data-table-virtual>
@@ -37,8 +37,8 @@
         <v-card-text>
           ¿Estás seguro de que querés eliminar <strong>{{ marcaSeleccionada?.nombre }}</strong>?
         </v-card-text>
-        <v-card-text class="text-caption text-error" v-if="errorDelete">
-          {{ errorDeleteMessage }}
+        <v-card-text class="text-caption text-error" v-if="store.deleteError">
+          {{ store.deleteError }}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -52,9 +52,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted,watch } from 'vue'
-import MarcaService from '../services/MarcaService'
+import { useMarcaStore } from '../stores/marcaStore'
 import type { Marca } from '../types/Marca'
-import { AxiosError } from 'axios'
+
 
 //ReadOnly
 const headers = [
@@ -63,28 +63,18 @@ const headers = [
   { title: 'Acciones', key: 'acciones', align: 'center', sortable: false },
 ] as const
 
-const marcas = ref<Marca[]>([])
+const store = useMarcaStore()
 const deleteDialog = ref(false)
-const errorDelete = ref(false)
-const errorDeleteMessage = ref("")
 const marcaSeleccionada = ref<Marca | null>(null)
 
-onMounted(async () => {
-  await cargarMarcas()
+onMounted(() => {
+  store.fetchMarcas()
 })
-
-async function cargarMarcas() {
-  try {
-    const response = await MarcaService.getAll()
-    marcas.value = response.data
-  } catch (error) {
-    console.error('Error al cargar las marcas:', error)
-  }
-}
 
 function editarMarca(item: Marca) {
   console.log('Editar:', item)
 }
+
 
 function openDeleteDialog(item: Marca) {
   marcaSeleccionada.value = item
@@ -94,23 +84,10 @@ function openDeleteDialog(item: Marca) {
 async function confirmarEliminacion() {
   if (!marcaSeleccionada.value) return
 
-  try {
-    await MarcaService.destroy(marcaSeleccionada.value.id)
-    marcas.value = marcas.value.filter(m => m.id !== marcaSeleccionada.value?.id)
+  const success = await store.deleteMarca(marcaSeleccionada.value.id)
+  if (success) {
     deleteDialog.value = false
     marcaSeleccionada.value = null
-    errorDelete.value = false
-    errorDeleteMessage.value = ""
-  } catch (error) {
-    errorDelete.value = true
-    console.error('Error al eliminar la marca:', error)
-
-    if (error instanceof AxiosError && error.response) {
-      const data = error.response.data
-      errorDeleteMessage.value = data?.message || "Ocurrió un error inesperado al eliminar la marca."
-    } else {
-      errorDeleteMessage.value = "Ocurrió un error inesperado. Por favor, intenta nuevamente."
-    }
   }
 }
 
@@ -118,8 +95,6 @@ watch(deleteDialog, (newValue) => {
   if (!newValue) {
     setTimeout(() => {
       marcaSeleccionada.value = null
-      errorDelete.value = false
-      errorDeleteMessage.value = ""
     }, 300)
   }
 })
