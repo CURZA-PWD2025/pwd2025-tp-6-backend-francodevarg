@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from .categoria_controller import CategoriaController
 
 categoria_bp = Blueprint('categoria_bp', __name__)
-@categoria_bp.route("/categorias", methods=["GET"])
+@categoria_bp.route("/categorias/", methods=["GET"])
 def get_all_categorias():
     try:
         categorias = CategoriaController.get_all()
@@ -24,7 +24,7 @@ def get_categoria_by_id(id):
     except Exception as exc:
         return jsonify({'mensaje': f"Error: {str(exc)}"}), 500
 
-@categoria_bp.route("/categorias", methods=["POST"])
+@categoria_bp.route("/categorias/", methods=["POST"])
 def create_categoria():
     try:
         data = request.get_json()
@@ -65,6 +65,6 @@ def delete_categoria(id):
         if result:
             return jsonify({'mensaje': 'Categoría eliminada con éxito'}), 200
         else:
-            return jsonify({'mensaje': 'Error al eliminar la categoría'}), 500
+            return jsonify({'mensaje': 'Error al eliminar la categoría: tiene artículos asociados.'}), 500
     except Exception as exc:
         return jsonify({'mensaje': f"Error: {str(exc)}"}), 500

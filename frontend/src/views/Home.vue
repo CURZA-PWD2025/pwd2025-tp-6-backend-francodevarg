@@ -6,5 +6,8 @@
     </div>
 </template>
   
-  <script setup>
-  </script>
+<script setup lang="ts">
+import { ref } from 'vue'
+console.log('Home component loaded')
+
+</script>
