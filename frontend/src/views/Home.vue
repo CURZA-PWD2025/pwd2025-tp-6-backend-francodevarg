@@ -1,13 +1,20 @@
 <template>
     <div>
-        <h1>Welcome to the Home Page</h1>
-        <p>This is the home page of our application.</p>
-        <v-icon icon="mdi-home" color="black" />
+        <h1>Bienvenido a la aplicación de gestión de artículos</h1>
+        <p>Redirigiendo a la lista de artículos...</p>
+        <v-progress-circular indeterminate color="primary" />
     </div>
 </template>
   
 <script setup lang="ts">
-import { ref } from 'vue'
-console.log('Home component loaded')
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+onMounted(() => {
+    console.log('Home component loaded')
+    router.push('/articulos')
+})
 
 </script>
