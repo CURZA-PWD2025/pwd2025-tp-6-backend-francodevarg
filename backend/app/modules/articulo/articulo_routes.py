@@ -4,7 +4,7 @@ from .articulo_controller import ArticuloController
 articulo_bp = Blueprint("articulos", __name__)
 
 # Obtener todos los artículos
-@articulo_bp.route("/articulos", methods=["GET"])
+@articulo_bp.route("/articulos/", methods=["GET"])
 def get_all_articulos():
     try:
         articulos = ArticuloController.get_all()
@@ -30,7 +30,7 @@ def get_articulo_by_id(id):
 
 
 # Crear un nuevo artículo
-@articulo_bp.route("/articulos", methods=["POST"])
+@articulo_bp.route("/articulos/", methods=["POST"])
 def create_articulo():
     try:
         data = request.get_json()

@@ -16,7 +16,7 @@ def get_all_categorias():
 @categoria_bp.route("/categorias/<int:id>", methods=["GET"])
 def get_categoria_by_id(id):
     try:
-        categoria = CategoriaController.get_by_id(id)
+        categoria = CategoriaController.get_one(id)
         if categoria:
             return jsonify(categoria), 200
         else:

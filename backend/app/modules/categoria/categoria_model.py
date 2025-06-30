@@ -30,9 +30,10 @@ class CategoriaModel:
     def get_all():
         rows = ConnectDB.read(CategoriaModel.SQL_SELECT_ALL)
         return rows if rows else []
-        
-    def get_by_id(self):
-        result = ConnectDB.read(CategoriaModel.SQL_SELECT_BY_ID, (self.id,))
+            
+    @staticmethod
+    def get_one(id:int) -> dict:
+        result = ConnectDB.read(CategoriaModel.SQL_SELECT_BY_ID, (id,))
         return result[0] if result else None
 
     def create(self):

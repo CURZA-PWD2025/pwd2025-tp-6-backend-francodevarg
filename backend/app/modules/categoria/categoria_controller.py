@@ -9,8 +9,8 @@ class CategoriaController:
         return categorias
 
     @staticmethod
-    def get_by_id(id: int):
-        categoria = CategoriaModel(id=id).get_by_id()
+    def get_one(id: int):
+        categoria = CategoriaModel().get_one(id=id)
         return categoria
 
     @staticmethod

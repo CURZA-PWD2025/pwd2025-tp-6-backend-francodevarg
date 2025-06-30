@@ -1,6 +1,7 @@
 from app.database.connect_db import ConnectDB
 from app.modules.marca.marca_model import MarcaModel as Marca
 from app.modules.proveedor.proveedor_model import ProveedorModel as Proveedor
+from app.modules.categoria.categoria_model import CategoriaModel as Categoria
 
 
 class ArticuloModel:
@@ -46,22 +47,38 @@ class ArticuloModel:
         )
 
     @staticmethod
-    def get_all()->list[dict]:
+    def get_all() -> list[dict]:
         rows = ConnectDB.read(ArticuloModel.SQL_SELECT_ALL)
         if not rows:
             return []
 
         articulos = []
         for row in rows:
-            marca = Marca().get_one((row["marca_id"]))
-            proveedor = Proveedor().get_one((row["proveedor_id"]))
+            marca = Marca().get_one(row["marca_id"])
+            proveedor = Proveedor().get_one(row["proveedor_id"])
+
+            # Obtener todas las categorías asociadas (N:N)
+            categoria_ids = ConnectDB.read(
+                "SELECT categoria_id FROM ARTICULOS_CATEGORIAS WHERE articulo_id = %s",
+                (row["id"],)
+            )
+            categorias = [
+                Categoria().get_one(cat_row["categoria_id"]) for cat_row in categoria_ids
+            ]
+
+            # Inyectar datos
             row["marca"] = marca
             row["proveedor"] = proveedor
+            row["categorias"] = categorias
+
+            # Eliminar claves que ya no son necesarias
             del row["marca_id"]
             del row["proveedor_id"]
+
             articulos.append(row)
+
         return articulos
-    
+
     @staticmethod
     def get_one(id: int) -> dict | None:
         result = ConnectDB.read(ArticuloModel.SQL_SELECT_BY_ID, (id,))
