@@ -129,3 +129,14 @@ class ArticuloModel:
                 "INSERT INTO ARTICULOS_CATEGORIAS (articulo_id, categoria_id) VALUES (%s, %s)",
                 (articulo_id, categoria_id)
             )
+            
+    def asociar_categorias_reemplazando(self, articulo_id: int, categoria_ids: list[int]) -> None:
+        ConnectDB.write(
+            "DELETE FROM ARTICULOS_CATEGORIAS WHERE articulo_id = %s",
+            (articulo_id,)
+        )
+        for categoria_id in categoria_ids:
+            ConnectDB.write(
+                "INSERT INTO ARTICULOS_CATEGORIAS (articulo_id, categoria_id) VALUES (%s, %s)",
+                (articulo_id, categoria_id)
+            )

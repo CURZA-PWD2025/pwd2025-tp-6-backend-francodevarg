@@ -1,6 +1,5 @@
-// services/ArticuloService.ts
 import ApiService from './ApiService'
-import type { Articulo } from '../types/Articulo'
+import type { Articulo, ArticuloPayload } from '../types/Articulo'
 
 const baseUrl = 'articulos/'
 
@@ -11,11 +10,11 @@ export default {
   getOne(id: number) {
     return ApiService.getOne<Articulo>(baseUrl, id)
   },
-  create(data: Partial<Articulo>) {
-    return ApiService.create<Articulo>(baseUrl, data)
+  create(data: ArticuloPayload) {
+    return ApiService.create<ArticuloPayload>(baseUrl, data)
   },
-  update(id: number, data: Partial<Articulo>) {
-    return ApiService.update<Articulo>(baseUrl, id, data)
+  update(id: number, data: ArticuloPayload) {
+    return ApiService.update<ArticuloPayload>(baseUrl, id, data)
   },
   destroy(id: number) {
     return ApiService.destroy(baseUrl, id)

@@ -50,7 +50,10 @@ class ArticuloController:
             proveedor=proveedor
         )
         result = articulo.update()
-        return result
+        categoria_ids = data.get('categoria_ids', [])
+        articulo.asociar_categorias_reemplazando(id, categoria_ids)
+
+        return True
 
     @staticmethod
     def delete(id: int):
