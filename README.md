@@ -35,7 +35,14 @@ Este proyecto utiliza **Flask** como framework web y una capa personalizada de a
     ```bash
         pip install -r requirements.txt
     ```
-4. **Crear Archivo de Variables de Entorno**
+
+4. **Instalar Flask-CORS**
+
+    ```bash
+        pip install flask-cors
+    ```
+
+5. **Crear Archivo de Variables de Entorno**
     ```bash
         cp .env-dev .env
     ```
@@ -52,12 +59,12 @@ Este proyecto utiliza **Flask** como framework web y una capa personalizada de a
         FLASK_ENV=development
     ```
 
-5. **Correr la migracion de la DB**
+6. **Correr la migracion de la DB**
     ```bash
         python db_init.py
     ```
 
-6. **Correr flask**
+7. **Correr flask**
     ```bash
         flask run
     ```
@@ -85,4 +92,8 @@ Requisitos
 3. Despliegue en local 
     ```bash
         npm run dev 
-    ```
+            ```
+
+## :camera: Captura del Proyecto
+
+![Captura del Proyecto](./frontend/captura-proyecto.png)
