@@ -122,3 +122,10 @@ class ArticuloModel:
         except Exception as e:
             print(f"Error eliminando artículo {id}: {e}")
             return None
+        
+    def asociar_categorias(self, articulo_id: int, categoria_ids: list[int]) -> None:
+        for categoria_id in categoria_ids:
+            ConnectDB.write(
+                "INSERT INTO ARTICULOS_CATEGORIAS (articulo_id, categoria_id) VALUES (%s, %s)",
+                (articulo_id, categoria_id)
+            )

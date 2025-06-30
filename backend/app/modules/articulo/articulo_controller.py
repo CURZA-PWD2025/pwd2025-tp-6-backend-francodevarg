@@ -17,6 +17,7 @@ class ArticuloController:
     def create(data: dict):
         marca = MarcaModel(id=data['marca_id'])
         proveedor = ProveedorModel(id=data['proveedor_id'])
+
         articulo = ArticuloModel(
             descripcion=data['descripcion'],
             precio=data['precio'],
@@ -24,8 +25,17 @@ class ArticuloController:
             marca=marca,
             proveedor=proveedor
         )
-        result = articulo.create()
-        return result
+
+        articulo_id = articulo.create()
+
+        if not articulo_id:
+            return False
+
+        categoria_ids = data.get('categoria_ids', [])
+        articulo.asociar_categorias(articulo_id, categoria_ids)
+
+        return articulo_id
+
 
     @staticmethod
     def update(id: int, data: dict):

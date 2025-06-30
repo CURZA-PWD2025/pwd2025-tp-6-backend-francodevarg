@@ -39,11 +39,12 @@ def create_articulo():
         stock = data.get('stock')
         marca_id = data.get('marca_id')
         proveedor_id = data.get('proveedor_id')
+        categoria_ids = data.get('categoria_ids')
 
         # Validaciones mínimas
-        if not descripcion or precio is None or stock is None or not marca_id or not proveedor_id:
+        if not descripcion or precio is None or stock is None or not marca_id or not proveedor_id or not categoria_ids:
             
-            return jsonify({'mensaje': 'Todos los campos (descripcion,precio,stock,marca_id,proveedor_id) son requeridos'}), 400
+            return jsonify({'mensaje': 'Todos los campos (descripcion,precio,stock,marca_id,proveedor_id,categoria_ids[]) son requeridos'}), 400
 
         result = ArticuloController.create(data)
 
